@@ -1,0 +1,66 @@
+body {
+  min-height: 100vh;
+}
+
+._draggable {
+  /* height: 100px;
+  width: 100px;
+  margin: 20px; */
+  /* border: 1px solid red; */
+  /* border-radius: 4px; */
+  /* display: inline-block; */
+  /* float: left; */
+  -webkit-transform: translate(0, 0);
+  -webkit-transition: -webkit-transform 500ms;
+  transform: translate(0, 0);
+  transition: transform 500ms;
+}
+._draggable > div:after,
+._draggable > div {
+  clear: both;
+  content: " ";
+  display: block;
+}
+
+._add-here {
+  border-style: dashed;
+}
+
+._draggable-container {
+  border: 1px solid gray;
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  margin-top: 50px;
+}
+
+.displayNone {
+  display: none !important;
+}
+
+._dragging {
+  position: absolute;
+  cursor: move;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+@keyframes newAniamteDrop {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+    border-style: dashed;
+  }
+}
+._dragged ._animate_drop {
+  animation-name: newAniamteDrop;
+  animation-duration: 0.5s;
+  border: 1px dashed blue;
+  height: 100%;
+}
+
+._draggable._dragged {
+  border: none;
+}
