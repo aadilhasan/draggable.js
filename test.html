@@ -72,9 +72,10 @@
     </div>
     <script src="./index.js"></script>
     <script>
-        dragabbles.makeDragable(".container");
-        dragabbles.addHandler((el, newIndex, oldIndex) => {
-            console.log(el, newIndex, oldIndex);
+        draggable.makeDraggable(".container");
+        // draggable.makeDraggable(".container", { identifier: 0, type: 'index' });
+        draggable.addHandler((el, allNewIndexes, newIndex, oldIndex) => {
+            console.log(el, allNewIndexes, newIndex, oldIndex);
         });
     </script>
 </body>

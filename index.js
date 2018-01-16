@@ -74,7 +74,11 @@
     return checkElementHasParent(el.parentNode, parentClass, limitClass);
   };
 
-  // clear temp classes after element has been droped
+  /*
+   *
+   *clear temp classes after element has been droped
+   *
+   */
   function clearTarget() {
     $("." + dragging)[0].remove();
     let dt = $(".dgble-top"),
@@ -93,7 +97,11 @@
     }
   }
 
-  // make dragged element style and classes as it was initialy
+  /**
+   *
+   *make dragged element style and classes as it was initialy
+   *
+   */
   function clearDragElment() {
     let elDragging = $("." + dragging)[0];
     if (!elDragging) return;
@@ -123,12 +131,14 @@
     el.classList.add("_dragged");
     return;
 
-    // animate using js
+    /**
+     *
+     * animate using js
+     *
+     */
     let x = 200,
       temp = 0;
-    // console.log(" el ", el);
     let timeout = setInterval(() => {
-      // console.log("interval runing ", el);
       if (temp == x) {
         clearInterval(timeout);
         el.style.borderStyle = "dashed";
@@ -145,18 +155,23 @@
    *
    * @param {DOM-node} el
    *
-   * @return {number}
+   * @return {object}
    */
 
-  function getElementIndex(el) {
+  function getIndexs(el) {
     let allDragable = $("." + draggableElementClassName);
-    let index = null;
+    let index = null,
+      newIndexes = {};
     for (let i = 0; i < allDragable.length; i++) {
       if (el.isEqualNode(allDragable[i])) {
         index = i;
       }
+      newIndexes[allDragable[i].getAttribute("d-index")] = i;
     }
-    return index;
+    return {
+      elementIndex: index,
+      allIndexs: newIndexes
+    };
   }
 
   /**
@@ -172,21 +187,42 @@
       draggableElementClassName,
       containerClassName
     );
-    // if target el is not draggable( target el or its parent elements don't have dragabble class) then return.
+    /**
+     *
+     * if target el is not draggable( target el or its parent elements don't have dragabble class) then return.
+     *
+     */
     if (!isDragable) return;
     clickedEl = isDragable;
-    // get el's current index
-    elementsOldIndex = getElementIndex(clickedEl);
-    // set parent el
+    /**
+     *
+     * get el's current index
+     *
+     */
+
+    let obj = getIndexs(clickedEl);
+    elementsOldIndex = obj.elementIndex;
+
+    /**
+     *
+     * set parent el
+     *
+     */
     parent = clickedEl.parentNode;
-    // get current cordinates of parent el
+    /**
+     *
+     * get current cordinates of parent el
+     *
+     */
     parentCords = parent.getBoundingClientRect();
     parent.style.height = parentCords.height;
     mouseDown = true;
 
-    // console.log(e.clientX - parentCords.x, e.clientY - parentCords.y);
-
-    // add dragging class to click el so it can be tracked and dragegd
+    /**
+     *
+     * add dragging class to click el so it can be tracked and dragged
+     *
+     */
     clickedEl.classList.add(dragging);
     clickedEl.style.position = "relative";
   }
@@ -199,11 +235,18 @@
    */
 
   function onUp(e) {
-    // if there is not el in which mouse was clicked/down the return
+    /**
+     *
+     * if there is not el in which mouse was clicked/down the return
+     *
+     */
     if (!clickedEl) return;
     mouseDown = false;
 
-    // if dragged element is not being hovered on any sibling element then reset dragging elements style to default
+    /**
+     * if dragged element is not being hovered on any sibling element then reset dragging elements style to default
+     *
+     */
     if (!newTopDraggable && !newBottomDraggable) {
       clearDragElment();
       let draggingNode = $("." + dragging)[0];
@@ -214,27 +257,42 @@
       draggingNode.style.left = "auto";
       return;
     }
-    // check if dragging el is hovering on left/top or right/bottom of a sibling
-    // and add the temp add here element to the hovered element
+    /**
+     *
+     * check if dragging el is hovering on left/top or right/bottom of a sibling
+     * and add the temp add here element to the hovered element
+     *
+     */
     let draggingNode;
     if (newTopDraggable) {
-      // add file before the hovered el
+      /**
+       * add file before the hovered el
+       *
+       */
       draggingNode = clearDragElment();
       newTopDraggable.replaceWith(draggingNode);
       newTopDraggable.remove();
       newTopDraggable = null;
     } else if (newBottomDraggable) {
-      // add file after the hovered el
+      /**
+       * add file after the hovered el
+       *
+       */
       draggingNode = clearDragElment();
       newBottomDraggable.replaceWith(draggingNode);
       newBottomDraggable.remove();
       newBottomDraggable = null;
     }
     clearTarget();
-    //get new index of the dragged el
-    elementsNewIndex = getElementIndex(draggingNode);
-    // call handler
-    handler(draggingNode, elementsNewIndex, elementsOldIndex);
+    /**
+     * get new index of the dragged el
+     *
+     */
+    let obj = getIndexs(draggingNode);
+    elementsNewIndex = obj.elementIndex;
+    let newIndexes = obj.allIndexs;
+
+    handler(draggingNode, newIndexes, elementsNewIndex, elementsOldIndex); //call handler
     clickedEl.classList.remove(dragging);
     elementsNewIndex = elementsOldIndex = null;
   }
@@ -313,11 +371,13 @@
     className,
     el
   ) {
-    // console.log(parent, dropEl, insertBefore, el.classList, className);
-    parent.insertBefore(dropEl, insertBefore);
-    animate(dropEl);
-    removeExistingHoverIndicatorClasses();
-    el.classList.add(className);
+    // sometimes it gives an error so keeping it a try block
+    try {
+      parent.insertBefore(dropEl, insertBefore);
+      animate(dropEl);
+      removeExistingHoverIndicatorClasses();
+      el.classList.add(className);
+    } catch (e) {}
   }
 
   let counter = 0;
@@ -354,7 +414,11 @@
       clickedEl.style[key] = dragingStyle[key];
     }
 
-    //throttle : wait fot 20 tick befor checkin for hover, 20 is a ideal no this
+    /**
+     *
+     * throttle : wait fot 20 tick befor checkin for hover, 20 is a ideal no this
+     *
+     */
     ++counter;
     if (counter < 20) return;
     counter = 0;
@@ -456,16 +520,48 @@
    *
    */
 
-  function makeDragable(className) {
-    parent = $(className)[0];
+  function makeDraggable(identifier, notDraggable) {
+    parent = $(identifier)[0];
     addClass(parent, containerClassName);
-    // console.log(parent);
+    let skip = false;
+    if (
+      notDraggable &&
+      (Array.isArray(notDraggable) || typeof notDraggable !== "object")
+    ) {
+      console.warn(
+        `second argument must be an object, eg: "{identifier: 'className/Index' , type: 'class/index'}"`
+      );
+    } else if (typeof notDraggable == "object") {
+      if (
+        notDraggable.identifier == undefined ||
+        notDraggable.identifier == null
+      ) {
+        console.warn(`Second argument must have a "identifier" key`);
+      } else if (notDraggable.type == undefined || notDraggable.type == null) {
+        console.warn(`Second argument must have a "type" key`);
+      } else {
+        skip = true;
+      }
+    }
+
     let children = parent.children,
       len = children.length,
       i = 0;
     // add class to all children
     for (i; i < len; i++) {
-      addClass(children[i], draggableElementClassName);
+      if (skip) {
+        if (
+          (notDraggable.type == "class" &&
+            !children[i].classList.contains(notDraggable.identifier)) ||
+          notDraggable.identifier != i
+        ) {
+          addClass(children[i], draggableElementClassName);
+          children[i].setAttribute("d-index", i);
+        }
+      } else {
+        addClass(children[i], draggableElementClassName);
+        children[i].setAttribute("d-index", i);
+      }
     }
 
     allDragable = children;
@@ -475,10 +571,15 @@
     parent.addEventListener("mousedown", onDown);
     document.querySelector("body").addEventListener("mouseup", onUp);
     parent.addEventListener("mousemove", onMove);
+    console.log(" ========= draggable init ============");
   }
 
   /**
-   * add callback function to handler
+   * add callback function to handler, every callback handler gets 4 params
+   * 1. dragged element
+   * 2. object (key = newIndex, value = oldIndex)
+   * 3. dragged element's new index
+   * 4. dragged element's old index
    *
    * @param {function} db
    *
@@ -488,9 +589,22 @@
     handler = cb;
   }
 
+  /**
+   * destroy draggable by removing attached event listeners
+   *
+   *
+   */
+  function destroy() {
+    parent.removeEventListener("mousedown", onDown);
+    document.querySelector("body").removeEventListener("mouseup", onUp);
+    parent.removeEventListener("mousemove", onMove);
+    console.log(" ======== draggables destryed =========");
+  }
+
   // expose functions to the users by adding them in the window
-  window.dragabbles = {
-    makeDragable: makeDragable,
-    addHandler: addHandler
+  window.draggable = {
+    makeDraggable: makeDraggable,
+    addHandler: addHandler,
+    destroy: destroy
   };
 })(window);
