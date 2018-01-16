@@ -6,7 +6,7 @@
   let newTopDraggable, newBottomDraggable;
   let draggableElementClassName = "_draggable",
     containerClassName = "_draggable-container",
-    addDraggableClass = "_add-here",
+    dropAreaClass = "_add-here",
     dragging = "_dragging";
 
   /**
@@ -158,8 +158,8 @@
    * @return {object}
    */
 
-  function getIndexs(el) {
-    let allDraggable = $("." + draggableElementClassName);
+  function getIndexs(el, draggableClass) {
+    let allDraggable = $("." + draggableClass);
     let index = null,
       newIndexes = {};
     for (let i = 0; i < allDraggable.length; i++) {
@@ -200,7 +200,7 @@
      *
      */
 
-    let obj = getIndexs(clickedEl);
+    let obj = getIndexs(clickedEl, draggableElementClassName);
     elementsOldIndex = obj.elementIndex;
 
     /**
@@ -288,7 +288,7 @@
      * get new index of the dragged el
      *
      */
-    let obj = getIndexs(draggingNode);
+    let obj = getIndexs(draggingNode, draggableElementClassName);
     elementsNewIndex = obj.elementIndex;
     let newIndexes = obj.allIndexs;
 
@@ -298,7 +298,7 @@
   }
 
   /**
-   * convert sting in a number
+   * convert string to a number
    *
    * @param {string} px
    *
@@ -340,14 +340,18 @@
    * @return {DOM-node}
    */
 
-  function makeDropElement(el) {
+  function makeDropElement(
+    clickedEl,
+    draggableElementClassName,
+    dropAreaClass
+  ) {
     let dropEl = document.createElement("div");
     let clickedElCords = getComputedStyle(clickedEl, null);
     dropEl.style.height = clickedElCords.height;
     dropEl.style.width = clickedElCords.width;
     let animator = document.createElement("div");
     dropEl.classList.add(draggableElementClassName);
-    dropEl.classList.add(addDraggableClass);
+    dropEl.classList.add(dropAreaClass);
     animator.classList.add("_animate_drop");
     dropEl.appendChild(animator);
     return dropEl;
@@ -452,7 +456,7 @@
             e.clientY > top &&
             e.clientY < bottom
           ) {
-            if (el.classList.contains(addDraggableClass)) return;
+            if (el.classList.contains(dropAreaClass)) return;
             // if mouse is hovring on top/left of the el
             if (e.clientY < centerH || e.clientX < centeV) {
               if (el.classList.contains("dgble-top")) return;
@@ -463,7 +467,11 @@
                 el.classList.remove("dgble-top");
               }
 
-              newTopDraggable = makeDropElement();
+              newTopDraggable = makeDropElement(
+                clickedEl,
+                draggableElementClassName,
+                dropAreaClass
+              );
 
               if (newBottomDraggable) {
                 newBottomDraggable.remove();
@@ -491,7 +499,11 @@
 
               el.classList.remove("dgble-btm");
 
-              newBottomDraggable = makeDropElement();
+              newBottomDraggable = makeDropElement(
+                clickedEl,
+                draggableElementClassName,
+                dropAreaClass
+              );
 
               if (newTopDraggable) {
                 newTopDraggable.remove();
