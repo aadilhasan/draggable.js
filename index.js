@@ -8,6 +8,7 @@
     containerClassName = "_draggable-container",
     dropAreaClass = "_add-here",
     dragging = "_dragging";
+  let counter = 0;
 
   /**
    * take query and find element using it
@@ -101,8 +102,13 @@
    *
    *make dragged element style and classes as it was initialy
    *
+   * @param {string} dragging
+   *
+   * @return {DOM-node || null}
+   *
    */
-  function clearDragElment() {
+
+  function clearDragElment(dragging) {
     let elDragging = $("." + dragging)[0];
     if (!elDragging) return;
     elDragging = $("." + dragging)[0].cloneNode(true);
@@ -248,7 +254,7 @@
      *
      */
     if (!newTopDraggable && !newBottomDraggable) {
-      clearDragElment();
+      clearDragElment(dragging);
       let draggingNode = $("." + dragging)[0];
       if (!draggingNode) return;
       draggingNode.classList.remove(dragging);
@@ -269,7 +275,7 @@
        * add file before the hovered el
        *
        */
-      draggingNode = clearDragElment();
+      draggingNode = clearDragElment(dragging);
       newTopDraggable.replaceWith(draggingNode);
       newTopDraggable.remove();
       newTopDraggable = null;
@@ -278,7 +284,7 @@
        * add file after the hovered el
        *
        */
-      draggingNode = clearDragElment();
+      draggingNode = clearDragElment(dragging);
       newBottomDraggable.replaceWith(draggingNode);
       newBottomDraggable.remove();
       newBottomDraggable = null;
@@ -383,8 +389,6 @@
       el.classList.add(className);
     } catch (e) {}
   }
-
-  let counter = 0;
 
   /**
    * event listener function on mouse move
