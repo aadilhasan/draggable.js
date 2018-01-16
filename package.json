@@ -1,0 +1,23 @@
+{
+  "name": "draggable.js",
+  "version": "1.0.0",
+  "description":
+    "Draggable.js is a small pure js library which makes children of a html elements draggable, elements can be rearrange by drag and drop",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aadilhasan/draggable.js.git"
+  },
+  "author": "aadil hasan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aadilhasan/draggable.js/issues"
+  },
+  "homepage": "https://github.com/aadilhasan/draggable.js#readme",
+  "devDependencies": {
+    "jest": "^22.1.1"
+  }
+}
