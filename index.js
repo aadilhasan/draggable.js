@@ -1,12 +1,12 @@
 (function(window) {
   let mouseDown = false;
   let clickedEl, parent, parentCords, elementsOldIndex, elementsNewIndex;
-  let allDragable,
+  let allDraggable,
     handler = function() {};
   let newTopDraggable, newBottomDraggable;
   let draggableElementClassName = "_draggable",
     containerClassName = "_draggable-container",
-    addDragableClass = "_add-here",
+    addDraggableClass = "_add-here",
     dragging = "_dragging";
 
   /**
@@ -159,14 +159,14 @@
    */
 
   function getIndexs(el) {
-    let allDragable = $("." + draggableElementClassName);
+    let allDraggable = $("." + draggableElementClassName);
     let index = null,
       newIndexes = {};
-    for (let i = 0; i < allDragable.length; i++) {
-      if (el.isEqualNode(allDragable[i])) {
+    for (let i = 0; i < allDraggable.length; i++) {
+      if (el.isEqualNode(allDraggable[i])) {
         index = i;
       }
-      newIndexes[allDragable[i].getAttribute("d-index")] = i;
+      newIndexes[allDraggable[i].getAttribute("d-index")] = i;
     }
     return {
       elementIndex: index,
@@ -182,18 +182,18 @@
    */
 
   function onDown(e) {
-    let isDragable = checkElementHasParent(
+    let isDraggable = checkElementHasParent(
       e.target,
       draggableElementClassName,
       containerClassName
     );
     /**
      *
-     * if target el is not draggable( target el or its parent elements don't have dragabble class) then return.
+     * if target el is not draggable( target el or its parent elements don't have draggable class) then return.
      *
      */
-    if (!isDragable) return;
-    clickedEl = isDragable;
+    if (!isDraggable) return;
+    clickedEl = isDraggable;
     /**
      *
      * get el's current index
@@ -347,7 +347,7 @@
     dropEl.style.width = clickedElCords.width;
     let animator = document.createElement("div");
     dropEl.classList.add(draggableElementClassName);
-    dropEl.classList.add(addDragableClass);
+    dropEl.classList.add(addDraggableClass);
     animator.classList.add("_animate_drop");
     dropEl.appendChild(animator);
     return dropEl;
@@ -422,13 +422,13 @@
     ++counter;
     if (counter < 20) return;
     counter = 0;
-    allDragable = $("." + draggableElementClassName);
-    if (allDragable) {
-      let len = allDragable.length,
+    allDraggable = $("." + draggableElementClassName);
+    if (allDraggable) {
+      let len = allDraggable.length,
         i = 0;
       for (i; i < len; i++) {
-        let el = allDragable[i],
-          nextEl = allDragable[i + 1];
+        let el = allDraggable[i],
+          nextEl = allDraggable[i + 1];
         // if el is not being dragged then check if it is being hovered
         if (!el.classList.contains(dragging)) {
           let rect = el.getBoundingClientRect(),
@@ -452,7 +452,7 @@
             e.clientY > top &&
             e.clientY < bottom
           ) {
-            if (el.classList.contains(addDragableClass)) return;
+            if (el.classList.contains(addDraggableClass)) return;
             // if mouse is hovring on top/left of the el
             if (e.clientY < centerH || e.clientX < centeV) {
               if (el.classList.contains("dgble-top")) return;
@@ -564,7 +564,7 @@
       }
     }
 
-    allDragable = children;
+    allDraggable = children;
     parentCords = parent.getBoundingClientRect();
 
     // add event listeners to the parent el and body
